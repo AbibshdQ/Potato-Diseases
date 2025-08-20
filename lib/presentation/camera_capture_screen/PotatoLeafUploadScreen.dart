@@ -134,9 +134,9 @@ Future<void> _analyzeImage() async {
 
   setState(() => _isAnalyzing = true);
 
-  // final classifier = PotatoClassifier();
-  // await classifier.loadModel();
-  // final result = await classifier.predict(capturedLeafImage!);
+  final classifier = PotatoClassifier();
+  await classifier.loadModel();
+  final result = await classifier.predict(capturedLeafImage!);
 
   setState(() => _isAnalyzing = false);
 
@@ -144,9 +144,9 @@ Future<void> _analyzeImage() async {
     context,
     '/disease-analysis-results',
     arguments: {
-      // 'imagePath': capturedLeafImage!.path,
-      // 'diseaseName': result['className'],
-      // 'confidence': result['confidence'],
+      'imagePath': capturedLeafImage!.path,
+      'diseaseName': result['className'],
+      'confidence': result['confidence'],
     },
   );
 }

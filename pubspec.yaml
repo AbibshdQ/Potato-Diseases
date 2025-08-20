@@ -12,13 +12,10 @@ dependencies:
     sdk: flutter # 🚨 CRITICAL: Required for every Flutter project - DO NOT REMOVE
   hive: ^2.2.3
   hive_flutter: ^1.1.0
-  # tflite_flutter:
-  #   git:
-  #     url: https://github.com/am15h/tflite_flutter_plugin.git
-  #     ref: master
+  tflite_flutter: ^0.11.0
+  ffi: ^2.1.0
   image: ^3.2.2
-  # Camera
-  camera: ^0.10.0+4 
+  camera: ^0.10.5+9
 
   
   # 🚨 CRITICAL: Core UI and responsive design - DO NOT REMOVE OR MODIFY
@@ -36,6 +33,7 @@ dependencies:
   fl_chart: ^0.65.0
   permission_handler: ^11.1.0
   image_picker: ^1.0.4
+  # tflite_flutter_plus: ">=0.0.1 <1.0.0"
 
 dev_dependencies:
   flutter_test:    # 🚨 CRITICAL: Required for Flutter project testing - DO NOT REMOVE
