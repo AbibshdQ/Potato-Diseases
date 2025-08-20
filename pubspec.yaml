@@ -47,8 +47,9 @@ flutter:
   uses-material-design: true # 🚨 CRITICAL: Required for Material icon font - DO NOT REMOVE
   assets:
     - assets/
+    - assets/models/potato_leaf_model.tflite # 🚨 CRITICAL: Required for ML model - DO NOT REMOVE
+    # - assets/models/potato_leaf_model.tflite
     - assets/images/
-    - assets/models/potato_leaf_model.tflite
 
   # 🚨 CRITICAL ASSET MANAGEMENT RULES:
   # - DO NOT ADD NEW ASSET DIRECTORIES (assets/svg/, assets/icons/, etc.)

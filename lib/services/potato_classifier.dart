@@ -13,27 +13,37 @@ class PotatoClassifier {
   ];
 
   Future<void> loadModel() async {
-    _interpreter = await Interpreter.fromAsset('models/potato_leaf_model.tflite');
+    // Jangan pakai "assets/" di depannya
+    _interpreter =
+        await Interpreter.fromAsset("assets/models/potato_leaf_model.tflite");
   }
 
   Future<Map<String, dynamic>> predict(File file) async {
+    // Baca & resize gambar
     final raw = img.decodeImage(await file.readAsBytes())!;
     final resized = img.copyResize(raw, width: 224, height: 224);
 
-    var input = Float32List(1 * 224 * 224 * 3);
-    var idx = 0;
+    // Bentuk input [1, 224, 224, 3] Float32List
+    var input = Uint8List(1 * 224 * 224 * 3);
+    var buffer = input.buffer.asUint8List();
+
+    int index = 0;
     for (int y = 0; y < 224; y++) {
       for (int x = 0; x < 224; x++) {
-        final pixel = resized.getPixel(x, y);
-        input[idx++] = img.getRed(pixel) / 255.0;
-        input[idx++] = img.getGreen(pixel) / 255.0;
-        input[idx++] = img.getBlue(pixel) / 255.0;
+        var pixel = resized.getPixel(x, y);
+        buffer[index++] = img.getRed(pixel);
+        buffer[index++] = img.getGreen(pixel);
+        buffer[index++] = img.getBlue(pixel);
       }
     }
 
-    final output = List.generate(labels.length, (_) => 0.0).reshape([1, labels.length]);
-    _interpreter.run(input.buffer.asUint8List(), output);
+    // Bentuk output [1, labels.length]
+    var output = List.filled(labels.length, 0.0).reshape([1, labels.length]);
 
+    // Jalankan inferensi
+    _interpreter.run(input.reshape([1, 224, 224, 3]), output);
+
+    // Cari prediksi terbaik
     int best = 0;
     for (int i = 1; i < labels.length; i++) {
       if (output[0][i] > output[0][best]) {
