@@ -63,7 +63,6 @@ class PotatoClassifier {
     List<double> probs = _softmax(List<double>.from(output[0]));
 
     print('Output setelah softmax: $probs');
-// ...existing code...
 
     // Cari prediksi terbaik
     int best = 0;
@@ -79,8 +78,12 @@ class PotatoClassifier {
       'Potato___healthy': 'Healthy',
     }[labels[best]]!;
 
+    final double threshold = 0.5; // 60%
+
     return {
-      'className': readable,
+      'className': probs[best] >= threshold
+          ? readable
+          : 'Tidak dikenali',
       'confidence': probs[best] * 100,
     };
   }

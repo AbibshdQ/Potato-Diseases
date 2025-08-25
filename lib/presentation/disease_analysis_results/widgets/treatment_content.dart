@@ -66,7 +66,7 @@ class TreatmentContent extends StatelessWidget {
               SizedBox(width: 3.w),
               Expanded(
                 child: Text(
-                  'Always follow product label instructions and consult with agricultural experts for severe cases.',
+                  'Disarankan juga selalu ikuti petunjuk label produk dan konsultasikan dengan ahli pertanian untuk kasus yang parah.',
                   style: AppTheme.lightTheme.textTheme.bodySmall?.copyWith(
                     color: AppTheme.getAccentColor(true),
                     fontWeight: FontWeight.w500,
@@ -241,11 +241,11 @@ class TreatmentContent extends StatelessWidget {
     switch (priority.toLowerCase()) {
       case 'high':
       case 'urgent':
-        return AppTheme.lightTheme.colorScheme.error;
+        return AppTheme.lightTheme.colorScheme.secondary;
       case 'medium':
-        return AppTheme.getAccentColor(true);
+        return AppTheme.lightTheme.colorScheme.primary;
       case 'low':
-        return AppTheme.getSuccessColor(true);
+        return AppTheme.lightTheme.colorScheme.secondary;
       default:
         return AppTheme.lightTheme.colorScheme.primary;
     }

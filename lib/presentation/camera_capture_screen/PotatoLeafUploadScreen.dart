@@ -128,29 +128,27 @@ class _PotatoLeafUploadScreenState extends State<PotatoLeafUploadScreen>
     }
   }
 
+  Future<void> _analyzeImage() async {
+    if (capturedLeafImage == null) return;
 
-Future<void> _analyzeImage() async {
-  if (capturedLeafImage == null) return;
+    setState(() => _isAnalyzing = true);
 
-  setState(() => _isAnalyzing = true);
+    final classifier = PotatoClassifier();
+    await classifier.loadModel();
+    final result = await classifier.predict(capturedLeafImage!);
 
-  final classifier = PotatoClassifier();
-  await classifier.loadModel();
-  final result = await classifier.predict(capturedLeafImage!);
+    setState(() => _isAnalyzing = false);
 
-  setState(() => _isAnalyzing = false);
-
-  Navigator.pushNamed(
-    context,
-    '/disease-analysis-results',
-    arguments: {
-      'imagePath': capturedLeafImage!.path,
-      'diseaseName': result['className'],
-      'confidence': result['confidence'],
-    },
-  );
-}
-
+    Navigator.pushNamed(
+      context,
+      '/disease-analysis-results',
+      arguments: {
+        'imagePath': capturedLeafImage!.path,
+        'diseaseName': result['className'],
+        'confidence': result['confidence'],
+      },
+    );
+  }
 
   Future<bool> _requestCameraPermission() async {
     final status = await Permission.camera.request();
@@ -436,35 +434,35 @@ Future<void> _analyzeImage() async {
 
             SizedBox(height: 4.h),
 
-            // Recent Diagnoses
-            if (_recentDiagnoses.isNotEmpty) ...[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Diagnosis Terakhir',
-                    style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: _openDiagnosisHistory,
-                    child: Text(
-                      'Lihat Semua',
-                      style: TextStyle(
-                        color: AppTheme.lightTheme.primaryColor,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 2.h),
-              ...List.generate(
-                _recentDiagnoses.take(3).length,
-                (index) => _buildDiagnosisCard(_recentDiagnoses[index]),
-              ),
-            ],
+            // // Recent Diagnoses
+            // if (_recentDiagnoses.isNotEmpty) ...[
+            //   Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       Text(
+            //         'Diagnosis Terakhir',
+            //         style: AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //       ),
+            //       TextButton(
+            //         onPressed: _openDiagnosisHistory,
+            //         child: Text(
+            //           'Lihat Semua',
+            //           style: TextStyle(
+            //             color: AppTheme.lightTheme.primaryColor,
+            //             fontWeight: FontWeight.w600,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            //   SizedBox(height: 2.h),
+            //   ...List.generate(
+            //     _recentDiagnoses.take(3).length,
+            //     (index) => _buildDiagnosisCard(_recentDiagnoses[index]),
+            //   ),
+            // ],
           ],
         ),
       ),

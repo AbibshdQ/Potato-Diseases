@@ -33,11 +33,11 @@ class _SplashScreenState extends State<SplashScreen> {
   String _permissionMessage = '';
 
   final List<Map<String, dynamic>> _initializationSteps = [
-    {
-      'text': 'Loading TensorFlow Lite Models...',
-      'duration': 800,
-      'progress': 0.2,
-    },
+    // {
+    //   'text': 'Loading TensorFlow Lite Models...',
+    //   'duration': 800,
+    //   'progress': 0.2,
+    // },
     {
       'text': 'Preparing Disease Database...',
       'duration': 600,
@@ -48,11 +48,11 @@ class _SplashScreenState extends State<SplashScreen> {
       'duration': 400,
       'progress': 0.6,
     },
-    {
-      'text': 'Validating Storage Availability...',
-      'duration': 500,
-      'progress': 0.8,
-    },
+    // {
+    //   'text': 'Validating Storage Availability...',
+    //   'duration': 500,
+    //   'progress': 0.8,
+    // },
     {
       'text': 'Finalizing Setup...',
       'duration': 400,

@@ -168,12 +168,12 @@ class DiseaseResultCard extends StatelessWidget {
   }
 
   Color _getConfidenceColor(double confidence) {
-    if (confidence >= 80) {
+    if (confidence >= 65) {
       return AppTheme.getSuccessColor(true);
     } else if (confidence >= 60) {
       return AppTheme.getAccentColor(true);
     } else {
-      return AppTheme.lightTheme.colorScheme.error;
+      return AppTheme.getAccentColor(true);
     }
   }
 

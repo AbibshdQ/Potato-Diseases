@@ -64,110 +64,188 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
     }
   ];
 
-  final List<Map<String, dynamic>> _treatments = [
+  // Data untuk Early Blight
+  final List<Map<String, dynamic>> _earlyBlightTreatments = [
     {
       "step": 1,
-      "title": "Remove Affected Leaves",
+      "title": "Pengendalian Secara Mekanik",
       "description":
-          "Immediately remove and destroy all infected leaves to prevent spore spread. Do not compost infected material.",
+          "Pengendalian secara mekanik dengan mengumpulkan bagian tanaman yang terserang dan memusnahkan bagian tanaman tersebut.",
       "product": "Garden Pruning Shears",
       "dosage": "N/A",
       "frequency": "As needed",
       "priority": "high"
     },
-    {
+     {
       "step": 2,
-      "title": "Apply Fungicide",
+      "title": "Pengedalian Biologis",
       "description":
-          "Use a copper-based fungicide or chlorothalonil to control the spread of the disease.",
-      "product": "Copper Sulfate Fungicide",
-      "dosage": "2-3 tablespoons per gallon",
-      "frequency": "Every 7-10 days",
-      "priority": "high"
+          "Penggunaan Jamur Antagonis seperti jenis jamur Trichoderma harzianum bersifat antagonis terhadap jamur penyebab penyakit.",
+      "product": "Tricoderma",
+      "dosage": "2 g per liter air",
+      "frequency": "1-2 minggu sekali",
+      "priority": "medium"
     },
     {
       "step": 3,
-      "title": "Improve Air Circulation",
+      "title": "Gunakan Fungisida",
       "description":
-          "Ensure proper spacing between plants and remove weeds to improve airflow around potato plants.",
-      "product": "Garden Hoe",
-      "dosage": "N/A",
-      "frequency": "Weekly maintenance",
-      "priority": "medium"
+          "Gunakan fungisida berbahan dasar mangkozeb atau klorotalonil untuk mengendalikan penyebaran penyakit.",
+      "product": "Daconil 75WP, Mancozeb 80WP",
+      "dosage": "2-3 Sendok makan per tangki 100 liter",
+      "frequency": "Setiap 7-10 hari (tergantung pada kondisi cuaca)",
+      "priority": "low"
     },
-    {
-      "step": 4,
-      "title": "Water Management",
-      "description":
-          "Water at soil level to avoid wetting leaves. Use drip irrigation or soaker hoses when possible.",
-      "product": "Drip Irrigation System",
-      "dosage": "1-1.5 inches per week",
-      "frequency": "2-3 times per week",
-      "priority": "medium"
-    }
+    // {
+    //   "step": 4,
+    //   "title": "Pengelolaan Air ",
+    //   "description":
+    //       "Siram setinggi permukaan tanah agar daun tidak basah. Gunakan irigasi tetes atau selang penyiraman jika memungkinkan, untuk mengurangi kelembapan daun dan spora jamur.",
+    //   "product": "Drip Irrigation System",
+    //   "dosage": "1-1.5 inches per week",
+    //   "frequency": "2-3 times per week",
+    //   "priority": "medium"
+    // }
   ];
 
-  final List<Map<String, dynamic>> _preventionTips = [
+  final List<Map<String, dynamic>> _earlyBlightPrevention = [
     {
-      "title": "Crop Rotation",
+      "title": "Rotasi Tanaman",
       "description":
-          "Rotate potatoes with non-solanaceous crops for at least 3 years to break disease cycles.",
-      "season": "spring",
+          "Lakukan rotasi dengan tanaman non-solanaceae (bawang, jagung, kacang) minimal 2-3 tahun untuk memutus siklus penyakit, atau gunakan varietes sejenis AR 08 Agrihorti atau AR 07 Agrihorti",
       "iconName": "autorenew"
     },
     {
-      "title": "Resistant Varieties",
+      "title": "Gunakan Bibit Sehat",
       "description":
-          "Plant potato varieties with natural resistance to early blight such as 'Iron Duke' or 'Mountain Fresh Plus'.",
-      "season": "spring",
-      "iconName": "shield"
+          "Tanam benih kentang bersertifikat dan bebas penyakit untuk mencegah infeksi sejak awal.",
+      "iconName": "verified"
     },
     {
-      "title": "Proper Spacing",
+      "title": "Jarak Tanam Cukup",
       "description":
-          "Maintain adequate spacing between plants (12-15 inches) to ensure good air circulation.",
-      "season": "summer",
+          "Atur jarak tanam 25-30 cm antar tanaman agar sirkulasi udara baik dan daun cepat kering setelah hujan.",
       "iconName": "straighten"
     },
     {
-      "title": "Mulching",
+      "title": "Penyiraman Tepat",
       "description":
-          "Apply organic mulch around plants to reduce soil splash and maintain consistent moisture.",
-      "season": "summer",
-      "iconName": "grass"
+          "Siram langsung ke tanah, hindari membasahi daun. Lakukan pagi hari agar daun cepat kering.",
+      "iconName": "water_drop"
     },
     {
-      "title": "Fall Cleanup",
+      "title": "Sanitasi Lahan",
       "description":
-          "Remove all plant debris and fallen leaves at the end of the growing season.",
-      "season": "fall",
+          "Bersihkan sisa tanaman sakit dan gulma di lahan, terutama setelah panen, untuk menekan sumber inokulum.",
       "iconName": "cleaning_services"
     }
   ];
 
-  final List<Map<String, dynamic>> _relatedDiseases = [
+  // Data untuk Late Blight
+  final List<Map<String, dynamic>> _lateBlightTreatments = [
     {
-      "name": "Late Blight",
-      "similarity": 75.0,
-      "imageUrl":
-          "https://images.pexels.com/photos/6231887/pexels-photo-6231887.jpeg",
-      "keySymptom": "Water-soaked lesions"
+      "step": 1,
+      "title": "Buang Tanaman Terinfeksi",
+      "description":
+          "Cabut dan musnahkan tanaman yang terinfeksi berat untuk mencegah penyebaran penyakit.",
+      "product": "Garden Gloves",
+      "dosage": "N/A",
+      "frequency": "Segera setelah terdeteksi",
+      "priority": "high"
+    },
+        {
+      "step": 2,
+      "title": "Perbaiki Drainase",
+      "description":
+          "Pastikan drainase lahan baik agar air tidak menggenang dan kelembapan tidak tinggi.",
+      "product": "Drainage Tools",
+      "dosage": "N/A",
+      "frequency": "Cek rutin",
+      "priority": "medium"
     },
     {
-      "name": "Bacterial Wilt",
-      "similarity": 45.0,
-      "imageUrl":
-          "https://images.pexels.com/photos/4750274/pexels-photo-4750274.jpeg",
-      "keySymptom": "Wilting without spots"
+      "step": 3,
+      "title": "Aplikasi Fungisida Sistemik",
+      "description":
+          "Gunakan fungisida berbahan aktif Dimetomorf atau Klorotalonil, sesuai dosis anjuran.",
+      "product": "Dimetomorf",
+      "dosage": "Sesuai label produk(anjuran produk)",
+      "frequency": "Setiap 7-10 hari saat cuaca lembab",
+      "priority": "low"
+    },
+  ];
+
+  final List<Map<String, dynamic>> _lateBlightPrevention = [
+    {
+      "title": "Tanam Varietas Tahan",
+      "description":
+          "Pilih varietas kentang yang tahan terhadap penyakit late blight seperti GM 08, Sarpo Mira, dan Setanta.",
+      "iconName": "eco"
     },
     {
-      "name": "Verticillium Wilt",
-      "similarity": 35.0,
-      "imageUrl":
-          "https://images.pexels.com/photos/6231887/pexels-photo-6231887.jpeg",
-      "keySymptom": "V-shaped yellowing"
+      "title": "Pengaturan Waktu Tanam",
+      "description":
+          "Tanam pada awal musim kemarau untuk menghindari puncak kelembapan.",
+      "iconName": "calendar_today"
+    },
+    {
+      "title": "Sanitasi Lahan",
+      "description": "Bersihkan sisa tanaman dan gulma sebelum tanam.",
+      "iconName": "cleaning_services"
+    },
+    {
+      "title": "Rotasi Tanaman",
+      "description":
+          "Lakukan rotasi dengan tanaman non-solanaceae minimal 2 tahun.",
+      "iconName": "autorenew"
     }
   ];
+
+  // Data untuk Healthy
+  final List<Map<String, dynamic>> _healthyTreatments = [
+    {
+      "step": 1,
+      "title": "Tanaman Sehat",
+      "description":
+          "Tanaman kentang Anda sehat. Lanjutkan pemantauan rutin dan praktik budidaya yang baik.",
+      "product": "-",
+      "dosage": "-",
+      "frequency": "Rutin",
+      "priority": "low"
+    }
+  ];
+
+  final List<Map<String, dynamic>> _healthyPrevention = [
+    {
+      "title": "Pemantauan Rutin",
+      "description":
+          "Periksa tanaman secara berkala untuk mendeteksi gejala penyakit sejak dini.",
+      "iconName": "search"
+    },
+    {
+      "title": "Praktik Budidaya Baik",
+      "description":
+          "Lanjutkan rotasi tanaman, penggunaan bibit sehat, dan sanitasi lahan.",
+      "iconName": "verified"
+    }
+  ];
+
+  // Getter untuk memilih data sesuai diagnosis
+  List<Map<String, dynamic>> get _selectedTreatments {
+    final name = (_diagnosisData['diseaseName'] ?? '').toString().toLowerCase();
+    if (name.contains('early blight')) return _earlyBlightTreatments;
+    if (name.contains('late blight')) return _lateBlightTreatments;
+    if (name.contains('healthy')) return _healthyTreatments;
+    return [];
+  }
+
+  List<Map<String, dynamic>> get _selectedPrevention {
+    final name = (_diagnosisData['diseaseName'] ?? '').toString().toLowerCase();
+    if (name.contains('early blight')) return _earlyBlightPrevention;
+    if (name.contains('late blight')) return _lateBlightPrevention;
+    if (name.contains('healthy')) return _healthyPrevention;
+    return [];
+  }
 
   @override
   void initState() {
@@ -193,16 +271,15 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
   }
 
   @override
-void didChangeDependencies() {
-  super.didChangeDependencies();
-  final args = ModalRoute.of(context)?.settings.arguments as Map?;
-  if (args != null) {
-    _diagnosisData['imageUrl'] = args['imagePath'];
-    _diagnosisData['diseaseName'] = args['diseaseName'];
-    _diagnosisData['confidence'] = args['confidence'];
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args = ModalRoute.of(context)?.settings.arguments as Map?;
+    if (args != null) {
+      _diagnosisData['imageUrl'] = args['imagePath'];
+      _diagnosisData['diseaseName'] = args['diseaseName'];
+      _diagnosisData['confidence'] = args['confidence'];
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -210,73 +287,65 @@ void didChangeDependencies() {
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       body: Column(
         children: [
-          // Sticky header
+          // Sticky header, lebih kecil agar tidak makan ruang
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            height: _isHeaderVisible ? 25.h : 12.h,
+            height: _isHeaderVisible ? 18.h : 10.h, // <= Ubah di sini!
             child: LeafImageHeader(
               imageUrl: _diagnosisData['imageUrl'],
               onBackPressed: () => Navigator.pop(context),
             ),
           ),
 
-          // Scrollable content
+          // Konten utama scrollable
           Expanded(
             child: SingleChildScrollView(
               controller: _scrollController,
               physics: const BouncingScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 2.h),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    bottom: 2.h), // Tambah padding bawah agar tidak mentok
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // SizedBox(height: 2.h),
 
-                  // Disease result card
-                  DiseaseResultCard(diagnosisData: _diagnosisData),
+                    // Disease result card
+                    DiseaseResultCard(diagnosisData: _diagnosisData),
 
-                  SizedBox(height: 2.h),
+                    // SizedBox(height: 2.h),
 
-                  // Symptoms section
-                  ExpandableInfoSection(
-                    title: 'Disease Symptoms',
-                    iconName: 'visibility',
-                    initiallyExpanded: true,
-                    content: SymptomsContent(symptoms: _symptoms),
-                  ),
+                    // Treatment section
+                    ExpandableInfoSection(
+                      title: 'Treatment Recommendations',
+                      iconName: 'medical_services',
+                      initiallyExpanded: true,
+                      content:
+                          TreatmentContent(treatments: _selectedTreatments),
+                    ),
 
-                  SizedBox(height: 1.h),
+                    SizedBox(height: 1.h),
 
-                  // Treatment section
-                  ExpandableInfoSection(
-                    title: 'Treatment Recommendations',
-                    iconName: 'medical_services',
-                    content: TreatmentContent(treatments: _treatments),
-                  ),
+                    // Prevention section
+                    ExpandableInfoSection(
+                      title: 'Prevention Tips',
+                      iconName: 'shield',
+                      content: PreventionContent(
+                          preventionTips: _selectedPrevention),
+                    ),
 
-                  SizedBox(height: 1.h),
+                    SizedBox(height: 2.h),
 
-                  // Prevention section
-                  ExpandableInfoSection(
-                    title: 'Prevention Tips',
-                    iconName: 'shield',
-                    content: PreventionContent(preventionTips: _preventionTips),
-                  ),
+                    // Action buttons
+                    ActionButtons(
+                      diagnosisData: _diagnosisData,
+                      onShare: _shareResults,
+                      onSaveToHistory: _saveToHistory,
+                    ),
 
-                  SizedBox(height: 2.h),
-
-                  // Related diseases section
-                  RelatedDiseasesSection(relatedDiseases: _relatedDiseases),
-
-                  SizedBox(height: 2.h),
-
-                  // Action buttons
-                  ActionButtons(
-                    diagnosisData: _diagnosisData,
-                    onShare: _shareResults,
-                    onSaveToHistory: _saveToHistory,
-                  ),
-
-                  SizedBox(height: 4.h),
-                ],
+                    SizedBox(height: 4.h),
+                  ],
+                ),
               ),
             ),
           ),
@@ -306,7 +375,7 @@ void didChangeDependencies() {
         content: Row(
           children: [
             CustomIconWidget(
-              iconName: 'check_circle',
+              iconName: 'copy_all',
               color: AppTheme.getSuccessColor(true),
               size: 5.w,
             ),
@@ -398,10 +467,10 @@ void didChangeDependencies() {
 ${_symptoms.map((s) => '• ${s['title']}: ${s['description']}').join('\n')}
 
 💊 Treatment Priority:
-${_treatments.where((t) => t['priority'] == 'high').map((t) => '• ${t['title']}: ${t['description']}').join('\n')}
+${_selectedTreatments.where((t) => t['priority'] == 'high').map((t) => '• ${t['title']}: ${t['description']}').join('\n')}
 
 🛡️ Prevention Tips:
-${_preventionTips.take(3).map((p) => '• ${p['title']}: ${p['description']}').join('\n')}
+${_selectedPrevention.take(3).map((p) => '• ${p['title']}: ${p['description']}').join('\n')}
 
 Generated by PotatoLeaf Detector App
 #Agriculture #PlantHealth #PotatoFarming

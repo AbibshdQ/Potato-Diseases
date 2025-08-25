@@ -27,12 +27,12 @@ class ActionButtons extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: onShare,
                   icon: CustomIconWidget(
-                    iconName: 'share',
+                    iconName: 'copy_all',
                     color: AppTheme.lightTheme.colorScheme.onPrimary,
                     size: 5.w,
                   ),
                   label: Text(
-                    'Share Results',
+                    'Copy Results',
                     style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
                       color: AppTheme.lightTheme.colorScheme.onPrimary,
                       fontWeight: FontWeight.w600,

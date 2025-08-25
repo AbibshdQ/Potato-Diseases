@@ -23,9 +23,9 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
   // Mock data for onboarding screens
   final List<Map<String, dynamic>> _onboardingData = [
     {
-      "title": "Smart Disease Detection",
+      "title": "Smart Detection",
       "description":
-          "Instantly identify potato leaf diseases using your smartphone camera. Get accurate AI-powered diagnosis in seconds, right in your field.",
+          "Identifikasi penyakit daun kentang secara instan menggunakan kamera ponsel pintar Anda.",
       "imageUrl":
           "https://images.pexels.com/photos/4503273/pexels-photo-4503273.jpeg?auto=compress&cs=tinysrgb&w=800",
       "demoType": "camera",
@@ -33,7 +33,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
     {
       "title": "Comprehensive Disease Library",
       "description":
-          "Access detailed information about early blight, late blight, and healthy leaf identification with confidence scores and visual guides.",
+          "Identifikasi daun sehat dengan skor keyakinan dan panduan visual.",
       "imageUrl":
           "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=800&q=80",
       "demoType": "disease_gallery",
@@ -41,7 +41,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
     {
       "title": "Expert Treatment Guidance",
       "description":
-          "Receive personalized treatment recommendations, prevention tips, and connect with agricultural experts for professional consultation.",
+          "Dapatkan rekomendasi perawatan yang dipersonalisasi, kiat pencegahan.",
       "imageUrl":
           "https://images.pixabay.com/photo/2016/08/09/21/54/yellowstone-national-park-1581879_960_720.jpg",
       "demoType": "treatment",
@@ -197,13 +197,13 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      SizedBox(width: 2.w),
-                      CustomIconWidget(
-                        iconName: 'arrow_forward_ios',
-                        color: AppTheme.lightTheme.colorScheme.onSurface
-                            .withValues(alpha: 0.6),
-                        size: 4.w,
-                      ),
+                      // SizedBox(width: 2.w),
+                      // CustomIconWidget(
+                      //   iconName: 'arrow_forward_ios',
+                      //   color: AppTheme.lightTheme.colorScheme.onSurface
+                      //       .withValues(alpha: 0.6),
+                      //   size: 4.w,
+                      // ),
                     ],
                   ),
                 ),

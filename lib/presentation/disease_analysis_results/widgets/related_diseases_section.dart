@@ -191,9 +191,9 @@ class RelatedDiseasesSection extends StatelessWidget {
   }
 
   Color _getSimilarityColor(double similarity) {
-    if (similarity >= 80) {
+    if (similarity >= 100) {
       return AppTheme.lightTheme.colorScheme.error;
-    } else if (similarity >= 60) {
+    } else if (similarity >= 90) {
       return AppTheme.getAccentColor(true);
     } else {
       return AppTheme.getSuccessColor(true);

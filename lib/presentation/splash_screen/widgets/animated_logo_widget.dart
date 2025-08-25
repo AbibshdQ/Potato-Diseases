@@ -59,7 +59,7 @@ class _AnimatedLogoWidgetState extends State<AnimatedLogoWidget>
           child: Opacity(
             opacity: _fadeAnimation.value,
             child: Container(
-              width: 25.w,
+              width: 30.w,
               height: 25.w,
               decoration: BoxDecoration(
                 color: AppTheme.lightTheme.colorScheme.surface,

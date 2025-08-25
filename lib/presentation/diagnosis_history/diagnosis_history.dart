@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:potatoleaf_detector/models/history_model.dart';
@@ -191,10 +193,10 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
               "confidence": e.confidence,
               "imageUrl": e.imagePath,
               "date": e.date,
-              "severity": "",
-              "treatmentStatus": "",
-              "symptoms": [],
-              "location": ""
+              // "severity": "",
+              // "treatmentStatus": "",
+              // "symptoms": [],
+              // "location": ""
             })
         .toList();
 
@@ -587,3 +589,5 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
     );
   }
 }
+
+/// Removed erroneous standalone build function that referenced undefined 'diagnosis'.

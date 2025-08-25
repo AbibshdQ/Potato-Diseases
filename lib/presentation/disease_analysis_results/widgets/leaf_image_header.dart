@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
+import '../../widgets/custom_image_widget.dart' as custom_image;
 
 class LeafImageHeader extends StatelessWidget {
   final String? imageUrl;
@@ -17,7 +18,7 @@ class LeafImageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 25.h,
+      height: 18.h, // Ubah dari 25.h ke 18.h agar lebih responsif
       decoration: BoxDecoration(
         color: AppTheme.lightTheme.colorScheme.surface,
         borderRadius: const BorderRadius.only(
@@ -42,7 +43,7 @@ class LeafImageHeader extends StatelessWidget {
                   bottomLeft: Radius.circular(24),
                   bottomRight: Radius.circular(24),
                 ),
-                child: CustomImageWidget(
+                child: custom_image.CustomImageWidget(
                   imageUrl: imageUrl!,
                   width: double.infinity,
                   height: double.infinity,
@@ -75,8 +76,10 @@ class LeafImageHeader extends StatelessWidget {
           // Header content
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
+              padding: EdgeInsets.symmetric(
+                  horizontal: 4.w, vertical: 0.h), // lebih kecil
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
@@ -84,14 +87,10 @@ class LeafImageHeader extends StatelessWidget {
                       GestureDetector(
                         onTap: onBackPressed,
                         child: Container(
-                          padding: EdgeInsets.all(2.w),
+                          padding: EdgeInsets.all(1.5.w),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.3),
-                              width: 1,
-                            ),
+                            color: Colors.black.withOpacity(0.2),
+                            shape: BoxShape.circle,
                           ),
                           child: CustomIconWidget(
                             iconName: 'arrow_back',
@@ -100,25 +99,28 @@ class LeafImageHeader extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Spacer(),
-                      Text(
-                        'Analysis Results',
-                        style:
-                            AppTheme.lightTheme.textTheme.titleLarge?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
+                      SizedBox(width: 2.w),
+                      Expanded(
+                        // Ganti dua Spacer() dengan Expanded
+                        child: Text(
+                          'Analysis Results',
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTheme.lightTheme.textTheme.titleLarge
+                              ?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                      const Spacer(),
-                      SizedBox(width: 10.w), // Balance for back button
+                      SizedBox(width: 5.w),
                     ],
                   ),
-                  const Spacer(),
+                  SizedBox(height: 0.h), // lebih kecil
                   if (imageUrl == null)
                     Center(
                       child: Container(
                         width: 20.w,
-                        height: 20.w,
+                        height: 5.w,
                         decoration: BoxDecoration(
                           color: AppTheme.lightTheme.colorScheme.outline
                               .withValues(alpha: 0.3),
@@ -126,8 +128,8 @@ class LeafImageHeader extends StatelessWidget {
                         ),
                         child: CustomIconWidget(
                           iconName: 'image',
-                          color: Colors.white.withValues(alpha: 0.7),
-                          size: 8.w,
+                          color: Colors.white.withValues(alpha: 0.1),
+                          size: 4.w,
                         ),
                       ),
                     ),

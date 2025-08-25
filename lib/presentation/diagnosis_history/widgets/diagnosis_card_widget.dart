@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -25,8 +26,8 @@ class DiagnosisCardWidget extends StatelessWidget {
     final double confidence = (diagnosis['confidence'] ?? 0.0).toDouble();
     final String imageUrl = diagnosis['imageUrl'] ?? '';
     final DateTime date = diagnosis['date'] ?? DateTime.now();
-    final String severity = diagnosis['severity'] ?? 'Medium';
-    final String treatmentStatus = diagnosis['treatmentStatus'] ?? 'Pending';
+    final String severity = diagnosis['severity'] ?? 'Success';
+    // final String treatmentStatus = diagnosis['treatmentStatus'] ?? 'Pending';
 
     return Dismissible(
       key: Key(diagnosis['id'].toString()),
@@ -79,12 +80,19 @@ class DiagnosisCardWidget extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8),
                       child: imageUrl.isNotEmpty
-                          ? CustomImageWidget(
-                              imageUrl: imageUrl,
-                              width: 15.w,
-                              height: 15.w,
-                              fit: BoxFit.cover,
-                            )
+                          ? (imageUrl.startsWith('http')
+                              ? Image.network(
+                                  imageUrl,
+                                  width: 15.w,
+                                  height: 15.w,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.file(
+                                  File(imageUrl),
+                                  width: 15.w,
+                                  height: 15.w,
+                                  fit: BoxFit.cover,
+                                ))
                           : Container(
                               color: AppTheme.lightTheme.colorScheme.surface,
                               child: CustomIconWidget(
@@ -129,7 +137,7 @@ class DiagnosisCardWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 1.w),
                           Text(
-                            '${(confidence * 100).toStringAsFixed(1)}% confidence',
+                            '${confidence.toStringAsFixed(1)}% confidence', // Hapus * 100
                             style: AppTheme.lightTheme.textTheme.bodySmall
                                 ?.copyWith(
                               color: _getConfidenceColor(confidence),
@@ -153,7 +161,7 @@ class DiagnosisCardWidget extends StatelessWidget {
                             style: AppTheme.lightTheme.textTheme.bodySmall,
                           ),
                           Spacer(),
-                          _buildTreatmentStatusChip(treatmentStatus),
+                          // _buildTreatmentStatusChip(treatmentStatus),
                         ],
                       ),
                     ],
@@ -224,7 +232,7 @@ class DiagnosisCardWidget extends StatelessWidget {
       case 'high':
         badgeColor = AppTheme.lightTheme.colorScheme.error;
         break;
-      case 'medium':
+      case 'success':
         badgeColor = AppTheme.lightTheme.colorScheme.tertiary;
         break;
       case 'low':

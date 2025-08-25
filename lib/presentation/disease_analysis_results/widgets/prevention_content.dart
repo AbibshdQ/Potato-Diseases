@@ -157,7 +157,7 @@ class PreventionContent extends StatelessWidget {
               ),
               SizedBox(width: 3.w),
               Text(
-                'Seasonal Disease Management',
+                'Manajemen Penyakit Penanaman',
                 style: AppTheme.lightTheme.textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: AppTheme.lightTheme.colorScheme.primary,
@@ -167,20 +167,24 @@ class PreventionContent extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           _buildSeasonTip(
-              'Spring',
-              'Focus on soil preparation and early disease prevention',
+              'Musim Hujan',
+              'Pantau kelembapan daun, lakukan penyemprotan fungisida preventif, dan pastikan drainase lahan baik untuk mencegah busuk daun.',
+              'umbrella'),
+          SizedBox(height: 1.h),
+          _buildSeasonTip(
+              'Musim Kemarau',
+              'Jaga irigasi agar tanaman tidak stres air, periksa rutin gejala penyakit, dan lakukan sanitasi lahan dari sisa tanaman sakit.',
               'wb_sunny'),
           SizedBox(height: 1.h),
           _buildSeasonTip(
-              'Summer',
-              'Monitor for heat stress and maintain proper irrigation',
-              'wb_sunny'),
+              'Pra-Tanam',
+              'Gunakan bibit sehat, lakukan rotasi tanaman, dan olah tanah dengan baik untuk menekan sumber penyakit.',
+              'grass'),
           SizedBox(height: 1.h),
-          _buildSeasonTip('Fall',
-              'Prepare for harvest and post-harvest disease control', 'eco'),
-          SizedBox(height: 1.h),
-          _buildSeasonTip('Winter',
-              'Plan crop rotation and soil health improvement', 'ac_unit'),
+          _buildSeasonTip(
+              'Menjelang Panen',
+              'Buang daun yang terinfeksi, hindari penyiraman berlebih, dan panen saat cuaca cerah untuk mencegah penyebaran penyakit.',
+              'eco'),
         ],
       ),
     );
