@@ -11,6 +11,7 @@ class PotatoClassifier {
     'Potato___Early_blight',
     'Potato___Late_blight',
     'Potato___healthy',
+    'Tidak dikenali',
   ];
 
   Future<void> loadModel() async {
@@ -76,14 +77,17 @@ class PotatoClassifier {
       'Potato___Early_blight': 'Early Blight',
       'Potato___Late_blight': 'Late Blight',
       'Potato___healthy': 'Healthy',
+      'Tidak dikenali': 'Tidak dikenali',
     }[labels[best]]!;
 
-    final double threshold = 0.5; // 60%
+    // Jika prediksi terbaik adalah "Tidak dikenali" ATAU confidence penyakit < threshold, kembalikan "Tidak dikenali"
+    final double threshold = 0.5; // 50%
+    final bool isUnknown = labels[best] == 'Tidak dikenali';
 
     return {
-      'className': probs[best] >= threshold
-          ? readable
-          : 'Tidak dikenali',
+      'className': isUnknown || (!isUnknown && probs[best] < threshold)
+          ? 'Tidak dikenali'
+          : readable,
       'confidence': probs[best] * 100,
     };
   }

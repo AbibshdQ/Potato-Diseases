@@ -197,7 +197,7 @@ class DiseaseResultCard extends StatelessWidget {
       case 'healthy':
         return 'Healthy';
       case 'early':
-        return 'Early Stage';
+        return 'Detected';
       case 'mild':
         return 'Mild';
       case 'severe':

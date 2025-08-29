@@ -76,7 +76,7 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
       "frequency": "As needed",
       "priority": "high"
     },
-     {
+    {
       "step": 2,
       "title": "Pengedalian Biologis",
       "description":
@@ -153,7 +153,7 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
       "frequency": "Segera setelah terdeteksi",
       "priority": "high"
     },
-        {
+    {
       "step": 2,
       "title": "Perbaiki Drainase",
       "description":
@@ -283,6 +283,9 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
 
   @override
   Widget build(BuildContext context) {
+    final isUnknown = (_diagnosisData['diseaseName'] ?? '')
+        .toLowerCase()
+        .contains('tidak dikenali');
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       body: Column(
@@ -313,28 +316,39 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
                     // Disease result card
                     DiseaseResultCard(diagnosisData: _diagnosisData),
 
-                    // SizedBox(height: 2.h),
+                    if (isUnknown)
+                      Padding(
+                        padding: EdgeInsets.all(4.w),
+                        child: Text(
+                          'Gambar yang Anda upload tidak dikenali sebagai daun kentang sehat ataupun penyakit yang tersedia. Silakan coba lagi dengan gambar yang lebih jelas.',
+                          style:
+                              AppTheme.lightTheme.textTheme.bodyLarge?.copyWith(
+                            color: AppTheme.lightTheme.colorScheme.error,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      )
+                    else ...[
+                      // Treatment section
+                      ExpandableInfoSection(
+                        title: 'Treatment Recommendations',
+                        iconName: 'medical_services',
+                        initiallyExpanded: true,
+                        content:
+                            TreatmentContent(treatments: _selectedTreatments),
+                      ),
 
-                    // Treatment section
-                    ExpandableInfoSection(
-                      title: 'Treatment Recommendations',
-                      iconName: 'medical_services',
-                      initiallyExpanded: true,
-                      content:
-                          TreatmentContent(treatments: _selectedTreatments),
-                    ),
+                      SizedBox(height: 1.h),
 
-                    SizedBox(height: 1.h),
-
-                    // Prevention section
-                    ExpandableInfoSection(
-                      title: 'Prevention Tips',
-                      iconName: 'shield',
-                      content: PreventionContent(
-                          preventionTips: _selectedPrevention),
-                    ),
-
-                    SizedBox(height: 2.h),
+                      // Prevention section
+                      ExpandableInfoSection(
+                        title: 'Prevention Tips',
+                        iconName: 'shield',
+                        content: PreventionContent(
+                            preventionTips: _selectedPrevention),
+                      ),
+                    ],
 
                     // Action buttons
                     ActionButtons(
