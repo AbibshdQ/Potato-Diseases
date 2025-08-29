@@ -426,7 +426,7 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
       ..id = DateTime.now().millisecondsSinceEpoch
       ..diseaseName = _diagnosisData['diseaseName']
       ..confidence = (_diagnosisData['confidence'] ?? 0.0).toDouble()
-      ..imagePath = imagePath
+      ..imagePath = imagePath // <-- ini harus path file lokal hasil upload
       ..date = DateTime.now();
 
     await box.add(history);

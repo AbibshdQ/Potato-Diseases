@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -16,9 +17,51 @@ class LeafImageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('LeafImageHeader imageUrl: $imageUrl');
+    Widget imageWidget;
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      if (imageUrl!.startsWith('http')) {
+        imageWidget = custom_image.CustomImageWidget(
+          imageUrl: imageUrl!,
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        );
+      } else if (File(imageUrl!).existsSync()) {
+        imageWidget = custom_image.CustomImageWidget(
+          imageUrl: imageUrl!,
+          width: double.infinity,
+          height: double.infinity,
+          fit: BoxFit.cover,
+        );
+      } else {
+        imageWidget = Container(
+          color: AppTheme.lightTheme.colorScheme.surface,
+          child: Center(
+            child: CustomIconWidget(
+              iconName: 'image',
+              color: Colors.white.withOpacity(0.2),
+              size: 10.w,
+            ),
+          ),
+        );
+      }
+    } else {
+      imageWidget = Container(
+        color: AppTheme.lightTheme.colorScheme.surface,
+        child: Center(
+          child: CustomIconWidget(
+            iconName: 'image',
+            color: Colors.white.withOpacity(0.2),
+            size: 10.w,
+          ),
+        ),
+      );
+    }
+
     return Container(
       width: double.infinity,
-      height: 18.h, // Ubah dari 25.h ke 18.h agar lebih responsif
+      height: 18.h,
       decoration: BoxDecoration(
         color: AppTheme.lightTheme.colorScheme.surface,
         borderRadius: const BorderRadius.only(
@@ -35,22 +78,16 @@ class LeafImageHeader extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          // Background image
-          if (imageUrl != null)
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(24),
-                  bottomRight: Radius.circular(24),
-                ),
-                child: custom_image.CustomImageWidget(
-                  imageUrl: imageUrl!,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+          // Background image or placeholder
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(24),
+                bottomRight: Radius.circular(24),
               ),
+              child: imageWidget,
             ),
+          ),
 
           // Gradient overlay
           Positioned.fill(
@@ -64,8 +101,8 @@ class LeafImageHeader extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withValues(alpha: 0.6),
-                    Colors.black.withValues(alpha: 0.2),
+                    Colors.black.withOpacity(0.6),
+                    Colors.black.withOpacity(0.2),
                     Colors.transparent,
                   ],
                 ),
@@ -76,8 +113,7 @@ class LeafImageHeader extends StatelessWidget {
           // Header content
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 4.w, vertical: 0.h), // lebih kecil
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 0.h),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +137,6 @@ class LeafImageHeader extends StatelessWidget {
                       ),
                       SizedBox(width: 2.w),
                       Expanded(
-                        // Ganti dua Spacer() dengan Expanded
                         child: Text(
                           'Analysis Results',
                           overflow: TextOverflow.ellipsis,
@@ -115,24 +150,7 @@ class LeafImageHeader extends StatelessWidget {
                       SizedBox(width: 5.w),
                     ],
                   ),
-                  SizedBox(height: 0.h), // lebih kecil
-                  if (imageUrl == null)
-                    Center(
-                      child: Container(
-                        width: 20.w,
-                        height: 5.w,
-                        decoration: BoxDecoration(
-                          color: AppTheme.lightTheme.colorScheme.outline
-                              .withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: CustomIconWidget(
-                          iconName: 'image',
-                          color: Colors.white.withValues(alpha: 0.1),
-                          size: 4.w,
-                        ),
-                      ),
-                    ),
+                  SizedBox(height: 0.h),
                 ],
               ),
             ),
@@ -142,3 +160,11 @@ class LeafImageHeader extends StatelessWidget {
     );
   }
 }
+
+// Usage example
+/*
+LeafImageHeader(
+  imageUrl: _diagnosisData['imageUrl'],
+  onBackPressed: () => Navigator.pop(context),
+),
+*/

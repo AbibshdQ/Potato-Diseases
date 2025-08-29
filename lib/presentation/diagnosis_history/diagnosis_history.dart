@@ -285,8 +285,12 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
     if (_isMultiSelectMode) {
       _toggleDiagnosisSelection(diagnosis['id']);
     } else {
-      Navigator.pushNamed(context, '/disease-analysis-results',
-          arguments: diagnosis);
+      Navigator.pushNamed(context, '/disease-analysis-results', arguments: {
+        'imagePath': diagnosis['imageUrl'], // Ambil dari Hive/history
+        'diseaseName': diagnosis['diseaseName'],
+        'confidence': diagnosis['confidence'],
+        // ...tambahkan field lain jika perlu
+      });
     }
   }
 
