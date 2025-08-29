@@ -354,7 +354,17 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
             child: Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              final box = Hive.box<HistoryModel>('historyBox');
+              for (final id in _selectedDiagnoses) {
+                final keyToDelete = box.keys.firstWhere(
+                  (k) => box.get(k)?.id == id,
+                  orElse: () => null,
+                );
+                if (keyToDelete != null) {
+                  await box.delete(keyToDelete);
+                }
+              }
               setState(() {
                 _allDiagnoses
                     .removeWhere((d) => _selectedDiagnoses.contains(d['id']));
@@ -397,7 +407,16 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
             child: Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              final box = Hive.box<HistoryModel>('historyBox');
+              // Temukan index diagnosis di Hive berdasarkan id
+              final keyToDelete = box.keys.firstWhere(
+                (k) => box.get(k)?.id == diagnosis['id'],
+                orElse: () => null,
+              );
+              if (keyToDelete != null) {
+                await box.delete(keyToDelete);
+              }
               setState(() {
                 _allDiagnoses.removeWhere((d) => d['id'] == diagnosis['id']);
                 _applyFiltersAndSearch();
