@@ -82,32 +82,32 @@ class ActionButtons extends StatelessWidget {
           SizedBox(height: 2.h),
           Row(
             children: [
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () => _navigateToTreatmentRecommendations(context),
-                  icon: CustomIconWidget(
-                    iconName: 'medical_services',
-                    color: AppTheme.getSuccessColor(true),
-                    size: 5.w,
-                  ),
-                  label: Text(
-                    'View Treatment Guide',
-                    style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
-                      color: AppTheme.getSuccessColor(true),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  style: TextButton.styleFrom(
-                    foregroundColor: AppTheme.getSuccessColor(true),
-                    padding: EdgeInsets.symmetric(vertical: 2.5.h),
-                    backgroundColor:
-                        AppTheme.getSuccessColor(true).withValues(alpha: 0.1),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
+              // Expanded(
+              //   child: TextButton.icon(
+              //     onPressed: () => _navigateToTreatmentRecommendations(context),
+              //     icon: CustomIconWidget(
+              //       iconName: 'medical_services',
+              //       color: AppTheme.getSuccessColor(true),
+              //       size: 5.w,
+              //     ),
+              //     label: Text(
+              //       'View Treatment Guide',
+              //       style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
+              //         color: AppTheme.getSuccessColor(true),
+              //         fontWeight: FontWeight.w600,
+              //       ),
+              //     ),
+              //     style: TextButton.styleFrom(
+              //       foregroundColor: AppTheme.getSuccessColor(true),
+              //       padding: EdgeInsets.symmetric(vertical: 2.5.h),
+              //       backgroundColor:
+              //           AppTheme.getSuccessColor(true).withValues(alpha: 0.1),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(12),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               SizedBox(width: 3.w),
               Expanded(
                 child: TextButton.icon(

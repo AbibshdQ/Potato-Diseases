@@ -26,15 +26,14 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
     'Early Blight',
     'Late Blight',
     'Healthy',
-    'Bacterial Wilt',
-    'Virus Infection',
+   
   ];
 
-  final List<String> _treatmentStatuses = [
-    'Pending',
-    'In Progress',
-    'Completed',
-  ];
+  // final List<String> _treatmentStatuses = [
+  //   'Pending',
+  //   'In Progress',
+  //   'Completed',
+  // ];
 
   @override
   void initState() {
@@ -101,8 +100,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
                   _buildDiseaseTypeSection(),
                   SizedBox(height: 3.h),
                   _buildConfidenceLevelSection(),
-                  SizedBox(height: 3.h),
-                  _buildTreatmentStatusSection(),
+           
                 ],
               ),
             ),
@@ -296,43 +294,7 @@ class _FilterBottomSheetWidgetState extends State<FilterBottomSheetWidget> {
     );
   }
 
-  Widget _buildTreatmentStatusSection() {
-    final List<String> selectedStatuses = _filters['treatmentStatuses'] ?? [];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Treatment Status',
-          style: AppTheme.lightTheme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        SizedBox(height: 1.h),
-        Column(
-          children: _treatmentStatuses.map((status) {
-            final isSelected = selectedStatuses.contains(status);
-            return CheckboxListTile(
-              title: Text(status),
-              value: isSelected,
-              onChanged: (selected) {
-                setState(() {
-                  if (selected == true) {
-                    selectedStatuses.add(status);
-                  } else {
-                    selectedStatuses.remove(status);
-                  }
-                  _filters['treatmentStatuses'] = selectedStatuses;
-                });
-              },
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
+ 
 
   Future<void> _selectDateRange() async {
     final DateTimeRange? picked = await showDateRangePicker(

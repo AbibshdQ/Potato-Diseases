@@ -362,6 +362,14 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
                   orElse: () => null,
                 );
                 if (keyToDelete != null) {
+                  // Hapus file gambar dari storage
+                  final imagePath = box.get(keyToDelete)?.imagePath;
+                  if (imagePath != null && imagePath.isNotEmpty) {
+                    final file = File(imagePath);
+                    if (await file.exists()) {
+                      await file.delete();
+                    }
+                  }
                   await box.delete(keyToDelete);
                 }
               }
@@ -409,12 +417,19 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
           TextButton(
             onPressed: () async {
               final box = Hive.box<HistoryModel>('historyBox');
-              // Temukan index diagnosis di Hive berdasarkan id
               final keyToDelete = box.keys.firstWhere(
                 (k) => box.get(k)?.id == diagnosis['id'],
                 orElse: () => null,
               );
               if (keyToDelete != null) {
+                // Hapus file gambar dari storage
+                final imagePath = box.get(keyToDelete)?.imagePath;
+                if (imagePath != null && imagePath.isNotEmpty) {
+                  final file = File(imagePath);
+                  if (await file.exists()) {
+                    await file.delete();
+                  }
+                }
                 await box.delete(keyToDelete);
               }
               setState(() {
