@@ -5,17 +5,23 @@ part 'history_model.g.dart';
 @HiveType(typeId: 0)
 class HistoryModel extends HiveObject {
   @HiveField(0)
-  late int id;
+  int id = 0;
+
+  // reference ke diseaseBox key (nullable)
+  @HiveField(5)
+  int? diseaseKey;
 
   @HiveField(1)
-  late String diseaseName;
+  String? diseaseName;
 
   @HiveField(2)
-  late double confidence;
+  double confidence = 0.0;
 
   @HiveField(3)
-  late String imagePath; // local path foto
+  String? imagePath;
 
   @HiveField(4)
-  late DateTime date;
+  DateTime? date;
+
+  HistoryModel();
 }

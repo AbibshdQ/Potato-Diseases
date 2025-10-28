@@ -18,18 +18,21 @@ class HistoryModelAdapter extends TypeAdapter<HistoryModel> {
     };
     return HistoryModel()
       ..id = fields[0] as int
-      ..diseaseName = fields[1] as String
+      ..diseaseKey = fields[5] as int?
+      ..diseaseName = fields[1] as String?
       ..confidence = fields[2] as double
-      ..imagePath = fields[3] as String
-      ..date = fields[4] as DateTime;
+      ..imagePath = fields[3] as String?
+      ..date = fields[4] as DateTime?;
   }
 
   @override
   void write(BinaryWriter writer, HistoryModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
+      ..writeByte(5)
+      ..write(obj.diseaseKey)
       ..writeByte(1)
       ..write(obj.diseaseName)
       ..writeByte(2)

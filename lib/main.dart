@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:potatoleaf_detector/models/disease_model.dart';
 import 'package:potatoleaf_detector/models/history_model.dart';
 import 'package:sizer/sizer.dart';
 
@@ -13,8 +14,10 @@ void main() async {
 
   // Hive init
   await Hive.initFlutter();
-  Hive.registerAdapter(HistoryModelAdapter());
+  Hive.registerAdapter(HistoryModelAdapter()); // typeId 0
+  Hive.registerAdapter(DiseaseModelAdapter()); // typeId 1
   await Hive.openBox<HistoryModel>('historyBox');
+  await Hive.openBox<DiseaseModel>('diseaseBox');
 
   // Custom error & orientation
   ErrorWidget.builder = (FlutterErrorDetails details) {
@@ -28,7 +31,6 @@ void main() async {
 
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   @override

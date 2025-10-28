@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:potatoleaf_detector/models/history_model.dart';
+import 'package:potatoleaf_detector/models/disease_model.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
@@ -27,7 +28,7 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
   List<Map<String, dynamic>> _filteredDiagnoses = [];
   Map<String, dynamic> _activeFilters = {};
   Set<int> _selectedDiagnoses = {};
-  bool _isMultiSelectMode = false;
+  bool _isMultiSelect = false;
   bool _isLoading = false;
   String _searchQuery = '';
 
@@ -180,25 +181,44 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
   //   setState(() {});
   // }
   void _loadMockData() async {
-    final box = Hive.box<HistoryModel>('historyBox');
+    final boxHistory = Hive.box<HistoryModel>('historyBox');
+    final boxDisease = Hive.box<DiseaseModel>('diseaseBox');
 
-    final dataList = box.values.toList().reversed.toList(); // terbaru diatas
-    print('ISI BOX HIVE: ${box.values.length}');
-    print(box.values.toList());
+    final dataList =
+        boxHistory.values.toList().reversed.toList(); // terbaru diatas
+    print('ISI BOX HIVE: ${boxHistory.values.length}');
+    print(boxHistory.values.toList());
 
-    _allDiagnoses = dataList
-        .map((e) => {
-              "id": e.id,
-              "diseaseName": e.diseaseName,
-              "confidence": e.confidence,
-              "imageUrl": e.imagePath,
-              "date": e.date,
-              // "severity": "",
-              // "treatmentStatus": "",
-              // "symptoms": [],
-              // "location": ""
-            })
-        .toList();
+    _allDiagnoses = dataList.map((e) {
+      final disease =
+          e.diseaseKey != null ? boxDisease.get(e.diseaseKey) : null;
+
+      return {
+        "id": e.id,
+        "diseaseName": disease?.name ?? e.diseaseName ?? 'Success',
+        "confidence": (e.confidence ?? 0.0).toDouble(),
+        "imageUrl": e.imagePath ?? '',
+        "date": e.date,
+        "diseaseDetails": disease, // pass full object jika perlu
+        // ensure keys used by search/filters always exist
+        "symptoms": disease != null
+            ? (disease.treatments ?? <String>[]) // fallback
+            : <String>[],
+        "severity": (() {
+          // Try known property first, then attempt a dynamic toMap call if present, otherwise fallback.
+          try {
+            final s = (e as dynamic).severity;
+            if (s != null) return s;
+          } catch (_) {}
+          try {
+            final map = (e as dynamic).toMap?.call();
+            if (map != null && map['severity'] != null) return map['severity'];
+          } catch (_) {}
+          return 'Success';
+        })(),
+        "treatmentStatus": 'Sueccess', // Placeholder, replace with actual if available
+      };
+    }).toList();
 
     _filteredDiagnoses = List.from(_allDiagnoses);
     setState(() {});
@@ -214,54 +234,66 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
   void _applyFiltersAndSearch() {
     List<Map<String, dynamic>> filtered = List.from(_allDiagnoses);
 
-    // Apply search filter
+    // Apply search filter (safe access)
     if (_searchQuery.isNotEmpty) {
+      final query = _searchQuery.toLowerCase();
       filtered = filtered.where((diagnosis) {
-        final diseaseName = (diagnosis['diseaseName'] as String).toLowerCase();
-        final symptoms =
-            (diagnosis['symptoms'] as List).join(' ').toLowerCase();
-        final query = _searchQuery.toLowerCase();
+        final diseaseName =
+            (diagnosis['diseaseName'] as String? ?? '').toLowerCase();
+
+        final symptomsObj = diagnosis['symptoms'];
+        final symptoms = (symptomsObj is List)
+            ? symptomsObj.join(' ').toLowerCase()
+            : (symptomsObj?.toString().toLowerCase() ?? '');
+
         return diseaseName.contains(query) || symptoms.contains(query);
       }).toList();
     }
 
-    // Apply date range filter
+    // Apply date range filter (safe)
     if (_activeFilters['dateRange'] != null) {
-      final DateTimeRange range = _activeFilters['dateRange'];
+      final DateTimeRange range = _activeFilters['dateRange'] as DateTimeRange;
       filtered = filtered.where((diagnosis) {
-        final date = diagnosis['date'] as DateTime;
-        return date.isAfter(range.start.subtract(Duration(days: 1))) &&
-            date.isBefore(range.end.add(Duration(days: 1)));
+        final date = diagnosis['date'] as DateTime?;
+        if (date == null) return false;
+        // inclusive check
+        return !date.isBefore(range.start) && !date.isAfter(range.end);
       }).toList();
     }
 
     // Apply disease type filter
     if (_activeFilters['diseaseTypes'] != null &&
         (_activeFilters['diseaseTypes'] as List).isNotEmpty) {
-      final List<String> types = _activeFilters['diseaseTypes'];
+      final List<String> types =
+          (_activeFilters['diseaseTypes'] as List).cast<String>();
       filtered = filtered.where((diagnosis) {
         return types.contains(diagnosis['diseaseName']);
       }).toList();
     }
 
-    // Apply confidence filter
+    // Apply confidence filter (safe)
     if (_activeFilters['minConfidence'] != null) {
-      final double minConfidence = _activeFilters['minConfidence'];
+      final double minConfidence = _activeFilters['minConfidence'] as double;
       filtered = filtered.where((diagnosis) {
-        return (diagnosis['confidence'] as double) >= minConfidence;
+        final conf = (diagnosis['confidence'] as num?)?.toDouble() ?? 0.0;
+        return conf >= minConfidence;
       }).toList();
     }
 
     // Apply treatment status filter
     if (_activeFilters['treatmentStatuses'] != null &&
         (_activeFilters['treatmentStatuses'] as List).isNotEmpty) {
-      final List<String> statuses = _activeFilters['treatmentStatuses'];
+      final List<String> statuses =
+          (_activeFilters['treatmentStatuses'] as List).cast<String>();
       filtered = filtered.where((diagnosis) {
-        return statuses.contains(diagnosis['treatmentStatus']);
+        final status = (diagnosis['treatmentStatus'] as String?) ?? 'Success';
+        return statuses.contains(status);
       }).toList();
     }
 
-    _filteredDiagnoses = filtered;
+    setState(() {
+      _filteredDiagnoses = filtered;
+    });
   }
 
   void _showFilterBottomSheet() {
@@ -282,7 +314,7 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
   }
 
   void _onDiagnosisCardTap(Map<String, dynamic> diagnosis) {
-    if (_isMultiSelectMode) {
+    if (_isMultiSelect) {
       _toggleDiagnosisSelection(diagnosis['id']);
     } else {
       Navigator.pushNamed(context, '/disease-analysis-results', arguments: {
@@ -295,9 +327,9 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
   }
 
   void _onDiagnosisCardLongPress(Map<String, dynamic> diagnosis) {
-    if (!_isMultiSelectMode) {
+    if (!_isMultiSelect) {
       setState(() {
-        _isMultiSelectMode = true;
+        _isMultiSelect = true;
         _selectedDiagnoses.add(diagnosis['id']);
       });
     }
@@ -308,17 +340,18 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
       if (_selectedDiagnoses.contains(id)) {
         _selectedDiagnoses.remove(id);
         if (_selectedDiagnoses.isEmpty) {
-          _isMultiSelectMode = false;
+          _isMultiSelect = false;
         }
       } else {
         _selectedDiagnoses.add(id);
+        _isMultiSelect = true;
       }
     });
   }
 
   void _cancelMultiSelect() {
     setState(() {
-      _isMultiSelectMode = false;
+      _isMultiSelect = false;
       _selectedDiagnoses.clear();
     });
   }
@@ -341,6 +374,32 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
     _cancelMultiSelect();
   }
 
+  Future<void> _deleteSelected() async {
+    final box = Hive.box<HistoryModel>('historyBox');
+    for (final id in _selectedDiagnoses.toList()) {
+      final keyToDelete = box.keys.firstWhere(
+        (k) => box.get(k)?.id == id,
+        orElse: () => null,
+      );
+      if (keyToDelete != null) {
+        final imagePath = box.get(keyToDelete)?.imagePath;
+        await box.delete(keyToDelete);
+        if (imagePath != null && imagePath.isNotEmpty) {
+          try {
+            final f = File(imagePath);
+            if (await f.exists()) await f.delete();
+          } catch (_) {}
+        }
+      }
+    }
+    setState(() {
+      _selectedDiagnoses.clear();
+      _isMultiSelect = false;
+      _loadMockData(); // re-load list from Hive
+      _applyFiltersAndSearch(); // re-apply active filters/search after reload
+    });
+  }
+
   void _deleteSelectedDiagnoses() {
     showDialog(
       context: context,
@@ -361,29 +420,38 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
                   (k) => box.get(k)?.id == id,
                   orElse: () => null,
                 );
+
                 if (keyToDelete != null) {
-                  // Hapus file gambar dari storage
+                  // Ambil path sebelum delete
                   final imagePath = box.get(keyToDelete)?.imagePath;
+                  // Hapus entry di Hive
+                  await box.delete(keyToDelete);
+                  // Hapus file gambar dari storage (jika ada)
                   if (imagePath != null && imagePath.isNotEmpty) {
-                    final file = File(imagePath);
-                    if (await file.exists()) {
-                      await file.delete();
+                    try {
+                      final file = File(imagePath);
+                      if (await file.exists()) {
+                        await file.delete();
+                      }
+                    } catch (_) {
+                      // ignore file delete error
                     }
                   }
-                  await box.delete(keyToDelete);
                 }
               }
+
               setState(() {
                 _allDiagnoses
                     .removeWhere((d) => _selectedDiagnoses.contains(d['id']));
                 _applyFiltersAndSearch();
+                _cancelMultiSelect();
               });
-              _cancelMultiSelect();
+
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Diagnoses deleted successfully'),
-                  backgroundColor: AppTheme.getSuccessColor(true),
+                  content: Text('Selected diagnoses deleted'),
+                  backgroundColor: AppTheme.lightTheme.colorScheme.error,
                 ),
               );
             },
@@ -476,12 +544,87 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
     });
   }
 
+  // helper: cari key Hive untuk history.id dengan aman
+  int? _findHistoryKeyById(int id) {
+    final box = Hive.box<HistoryModel>('historyBox');
+    for (final k in box.keys) {
+      final item = box.get(k);
+      if (item != null && item.id == id) return k as int;
+    }
+    return null;
+  }
+
+  // Ganti implementasi _buildHistoryList agar memakai _filteredDiagnoses
+  Widget _buildHistoryList() {
+    // gunakan filtered list (search + filters sudah diaplikasikan ke _filteredDiagnoses)
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _filteredDiagnoses.length,
+      itemBuilder: (context, index) {
+        final item = _filteredDiagnoses[index];
+        return DiagnosisCardWidget(
+          diagnosis: item,
+          onTap: () => _onDiagnosisCardTap(item),
+          onLongPress: () => _onDiagnosisCardLongPress(item),
+          onShare: () => _shareDiagnosis(item),
+          onArchive: () => _archiveDiagnosis(item),
+          onDelete: () async {
+            final int? keyToDelete = _findHistoryKeyById(item['id'] as int);
+            if (keyToDelete != null) {
+              final box = Hive.box<HistoryModel>('historyBox');
+              final imagePath = box.get(keyToDelete)?.imagePath;
+              await box.delete(keyToDelete);
+              if (imagePath != null && imagePath.isNotEmpty) {
+                try {
+                  final f = File(imagePath);
+                  if (await f.exists()) await f.delete();
+                } catch (_) {}
+              }
+              // reload data and reapply filters/search
+              _loadMockData();
+              _applyFiltersAndSearch();
+            }
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
-      appBar: _isMultiSelectMode
-          ? null
+      appBar: _isMultiSelect
+          ? AppBar(
+              title: Text('${_selectedDiagnoses.length} selected'),
+              backgroundColor: AppTheme.lightTheme.appBarTheme.backgroundColor,
+              foregroundColor: AppTheme.lightTheme.appBarTheme.foregroundColor,
+              elevation: AppTheme.lightTheme.appBarTheme.elevation,
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () async {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Text('Delete selected'),
+                        content:
+                            Text('Delete ${_selectedDiagnoses.length} items?'),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context, false),
+                              child: Text('Cancel')),
+                          TextButton(
+                              onPressed: () => Navigator.pop(context, true),
+                              child: Text('Delete')),
+                        ],
+                      ),
+                    );
+                    if (confirm == true) await _deleteSelected();
+                  },
+                ),
+              ],
+            )
           : AppBar(
               title: Text('Diagnosis History'),
               backgroundColor: AppTheme.lightTheme.appBarTheme.backgroundColor,
@@ -501,7 +644,7 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
             ),
       body: Column(
         children: [
-          if (_isMultiSelectMode)
+          if (_isMultiSelect)
             BatchSelectionWidget(
               selectedCount: _selectedDiagnoses.length,
               onCancel: _cancelMultiSelect,
@@ -526,55 +669,7 @@ class _DiagnosisHistoryState extends State<DiagnosisHistory> {
                 : RefreshIndicator(
                     onRefresh: _refreshDiagnoses,
                     color: AppTheme.lightTheme.colorScheme.primary,
-                    child: ListView.builder(
-                      controller: _scrollController,
-                      padding: EdgeInsets.only(top: 1.h, bottom: 2.h),
-                      itemCount: _filteredDiagnoses.length,
-                      itemBuilder: (context, index) {
-                        final diagnosis = _filteredDiagnoses[index];
-                        final isSelected =
-                            _selectedDiagnoses.contains(diagnosis['id']);
-
-                        return GestureDetector(
-                          onLongPress: () =>
-                              _onDiagnosisCardLongPress(diagnosis),
-                          child: Stack(
-                            children: [
-                              DiagnosisCardWidget(
-                                diagnosis: diagnosis,
-                                onTap: () => _onDiagnosisCardTap(diagnosis),
-                                onShare: () => _shareDiagnosis(diagnosis),
-                                onDelete: () => _deleteDiagnosis(diagnosis),
-                                onArchive: () => _archiveDiagnosis(diagnosis),
-                              ),
-                              if (_isMultiSelectMode)
-                                Positioned(
-                                  top: 2.h,
-                                  right: 6.w,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: AppTheme
-                                          .lightTheme.colorScheme.surface,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: AppTheme
-                                            .lightTheme.colorScheme.outline,
-                                      ),
-                                    ),
-                                    child: Checkbox(
-                                      value: isSelected,
-                                      onChanged: (value) =>
-                                          _toggleDiagnosisSelection(
-                                              diagnosis['id']),
-                                      shape: CircleBorder(),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                    child: _buildHistoryList(),
                   ),
           ),
         ],

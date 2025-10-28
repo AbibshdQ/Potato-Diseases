@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:potatoleaf_detector/models/history_model.dart';
+import 'package:potatoleaf_detector/models/disease_model.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
@@ -415,49 +416,47 @@ class _DiseaseAnalysisResultsState extends State<DiseaseAnalysisResults> {
   }
 
   void _saveToHistory() async {
-    final box = Hive.box<HistoryModel>('historyBox');
+    final boxHistory = Hive.box<HistoryModel>('historyBox');
+    final boxDisease = Hive.box<DiseaseModel>('diseaseBox');
 
-    // Ambil path gambar dari arguments (yang dikirim dari PotatoLeafUploadScreen)
     final args =
         ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     final String imagePath = args?['imagePath'] ?? '';
+    final String diseaseName = (_diagnosisData['diseaseName'] ?? '').toString();
+
+    // cari disease existing (case-insensitive)
+    int? existingKey;
+    for (final k in boxDisease.keys) {
+      final d = boxDisease.get(k);
+      if (d != null && d.name.toLowerCase() == diseaseName.toLowerCase()) {
+        existingKey = k as int;
+        break;
+      }
+    }
+
+    int diseaseKey;
+    if (existingKey != null) {
+      diseaseKey = existingKey;
+    } else {
+      final newDisease = DiseaseModel(
+        name: diseaseName,
+        description: _diagnosisData['description'] ?? '',
+      );
+      diseaseKey = await boxDisease.add(newDisease);
+    }
 
     final history = HistoryModel()
       ..id = DateTime.now().millisecondsSinceEpoch
-      ..diseaseName = _diagnosisData['diseaseName']
+      ..diseaseKey = diseaseKey
+      ..diseaseName = diseaseName
       ..confidence = (_diagnosisData['confidence'] ?? 0.0).toDouble()
-      ..imagePath = imagePath // <-- ini harus path file lokal hasil upload
+      ..imagePath = imagePath
       ..date = DateTime.now();
 
-    await box.add(history);
+    await boxHistory.add(history);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            CustomIconWidget(
-              iconName: 'bookmark_added',
-              color: AppTheme.lightTheme.colorScheme.primary,
-              size: 5.w,
-            ),
-            SizedBox(width: 3.w),
-            Expanded(
-              child: Text(
-                'Diagnosis saved to your history successfully!',
-                style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: AppTheme.lightTheme.colorScheme.primary,
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
+      SnackBar(content: Text('Saved to history')),
     );
   }
 

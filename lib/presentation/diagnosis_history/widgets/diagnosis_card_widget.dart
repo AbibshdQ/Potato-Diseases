@@ -7,6 +7,7 @@ import '../../../core/app_export.dart';
 class DiagnosisCardWidget extends StatelessWidget {
   final Map<String, dynamic> diagnosis;
   final VoidCallback? onTap;
+  final VoidCallback? onLongPress; // new
   final VoidCallback? onShare;
   final VoidCallback? onDelete;
   final VoidCallback? onArchive;
@@ -15,19 +16,56 @@ class DiagnosisCardWidget extends StatelessWidget {
     Key? key,
     required this.diagnosis,
     this.onTap,
+    this.onLongPress, // new
     this.onShare,
     this.onDelete,
     this.onArchive,
   }) : super(key: key);
 
+  Widget _placeholderThumbnail() {
+    return Container(
+      width: 18.w,
+      height: 18.w,
+      color: AppTheme.lightTheme.colorScheme.surface,
+      child: Icon(Icons.image, color: Colors.grey),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final String diseaseName = diagnosis['diseaseName'] ?? 'Unknown Disease';
-    final double confidence = (diagnosis['confidence'] ?? 0.0).toDouble();
     final String imageUrl = diagnosis['imageUrl'] ?? '';
-    final DateTime date = diagnosis['date'] ?? DateTime.now();
-    final String severity = diagnosis['severity'] ?? 'Success';
-    // final String treatmentStatus = diagnosis['treatmentStatus'] ?? 'Pending';
+    Widget thumbnail;
+
+    try {
+      if (imageUrl.isNotEmpty) {
+        if (imageUrl.startsWith('http')) {
+          thumbnail = Image.network(
+            imageUrl,
+            width: 18.w,
+            height: 18.w,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => _placeholderThumbnail(),
+          );
+        } else {
+          final file = File(imageUrl);
+          if (file.existsSync()) {
+            thumbnail = Image.file(
+              file,
+              width: 18.w,
+              height: 18.w,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => _placeholderThumbnail(),
+            );
+          } else {
+            thumbnail = _placeholderThumbnail();
+          }
+        }
+      } else {
+        thumbnail = _placeholderThumbnail();
+      }
+    } catch (_) {
+      thumbnail = _placeholderThumbnail();
+    }
 
     return Dismissible(
       key: Key(diagnosis['id'].toString()),
@@ -52,61 +90,16 @@ class DiagnosisCardWidget extends StatelessWidget {
         return false;
       },
       child: Card(
-        margin: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
+          onLongPress: onLongPress, // new
           child: Padding(
-            padding: EdgeInsets.all(4.w),
+            padding: EdgeInsets.all(3.w),
             child: Row(
               children: [
-                // Leaf thumbnail
-                Hero(
-                  tag: 'diagnosis_${diagnosis['id']}',
-                  child: Container(
-                    width: 15.w,
-                    height: 15.w,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: AppTheme.lightTheme.colorScheme.outline,
-                        width: 1,
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: imageUrl.isNotEmpty
-                          ? (imageUrl.startsWith('http')
-                              ? Image.network(
-                                  imageUrl,
-                                  width: 15.w,
-                                  height: 15.w,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.file(
-                                  File(imageUrl),
-                                  width: 15.w,
-                                  height: 15.w,
-                                  fit: BoxFit.cover,
-                                ))
-                          : Container(
-                              color: AppTheme.lightTheme.colorScheme.surface,
-                              child: CustomIconWidget(
-                                iconName: 'eco',
-                                color: AppTheme.lightTheme.colorScheme.primary,
-                                size: 6.w,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(8), child: thumbnail),
                 SizedBox(width: 3.w),
-
-                // Diagnosis details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -115,7 +108,7 @@ class DiagnosisCardWidget extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              diseaseName,
+                              diagnosis['diseaseName'] ?? 'Unknown Disease',
                               style: AppTheme.lightTheme.textTheme.titleMedium
                                   ?.copyWith(
                                 fontWeight: FontWeight.w600,
@@ -124,7 +117,8 @@ class DiagnosisCardWidget extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          _buildSeverityBadge(severity),
+                          _buildSeverityBadge(
+                              diagnosis['severity'] ?? 'Success'),
                         ],
                       ),
                       SizedBox(height: 0.5.h),
@@ -132,15 +126,17 @@ class DiagnosisCardWidget extends StatelessWidget {
                         children: [
                           CustomIconWidget(
                             iconName: 'verified',
-                            color: _getConfidenceColor(confidence),
+                            color: _getConfidenceColor(
+                                (diagnosis['confidence'] ?? 0.0).toDouble()),
                             size: 4.w,
                           ),
                           SizedBox(width: 1.w),
                           Text(
-                            '${confidence.toStringAsFixed(1)}% confidence', // Hapus * 100
+                            '${(diagnosis['confidence'] ?? 0.0).toStringAsFixed(1)}% confidence', // Hapus * 100
                             style: AppTheme.lightTheme.textTheme.bodySmall
                                 ?.copyWith(
-                              color: _getConfidenceColor(confidence),
+                              color: _getConfidenceColor(
+                                  (diagnosis['confidence'] ?? 0.0).toDouble()),
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -157,7 +153,7 @@ class DiagnosisCardWidget extends StatelessWidget {
                           ),
                           SizedBox(width: 1.w),
                           Text(
-                            _formatDate(date),
+                            _formatDate(diagnosis['date'] ?? DateTime.now()),
                             style: AppTheme.lightTheme.textTheme.bodySmall,
                           ),
                           Spacer(),
